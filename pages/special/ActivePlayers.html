@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
+    <style>
+        .chart {
+            width: 100%;
+            height: 400px;
+        }
+        
+        hr {
+            border: 2px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <br><br><br>
+    <hr>
+    <div class="chart">
+        <canvas id="all-bar"></canvas>
+    </div>
+    <div class="chart">
+        <canvas id="all-pie"></canvas>
+    </div>
+    <hr>
+    <div class="chart">
+        <canvas id="active-0-bar"></canvas>
+    </div>
+    <div class="chart">
+        <canvas id="active-0-pie"></canvas>
+    </div>
+    <hr>
+    <div class="chart">
+        <canvas id="active-1-bar"></canvas>
+    </div>
+    <div class="chart">
+        <canvas id="active-1-pie"></canvas>
+    </div>
+    <hr>
+    <div class="chart">
+        <canvas id="active-10-bar"></canvas>
+    </div>
+    <div class="chart">
+        <canvas id="active-10-pie"></canvas>
+    </div>
+    <hr>
+    <div class="chart">
+        <canvas id="active-100-bar"></canvas>
+    </div>
+    <div class="chart">
+        <canvas id="active-100-pie"></canvas>
+    </div>
+
+    <script>
+        var bgcolor = []
+        for (let i = 0; i < 47; i++)
+            bgcolor.push('#FE0E00')
+        for (let i = 47; i < 48; i++)
+            bgcolor.push('#FE7903')
+        for (let i = 48; i < 52; i++)
+            bgcolor.push('#FFC71F')
+        for (let i = 52; i < 54; i++)
+            bgcolor.push('#44B300')
+        for (let i = 54; i < 56; i++)
+            bgcolor.push('#318000')
+        for (let i = 56; i < 60; i++)
+            bgcolor.push('#02C9B3')
+        for (let i = 60; i < 65; i++)
+            bgcolor.push('#D042F3')
+        for (let i = 65; i < 100; i++)
+            bgcolor.push('#A00DC5')
+        var label100 = ['0-1%', '1-2%', '2-3%', '3-4%', '4-5%',
+            '5-6%', '6-7%', '7-8%', '8-9%', '9-10%',
+            '10-11%', '11-12%', '12-13%', '13-14%', '14-15%',
+            '15-16%', '16-17%', '17-18%', '18-19%', '19-20%',
+            '20-21%', '21-22%', '22-23%', '23-24%', '24-25%',
+            '25-26%', '26-27%', '27-28%', '28-29%', '29-30%',
+            '30-31%', '31-32%', '32-33%', '33-34%', '34-35%',
+            '35-36%', '36-37%', '37-38%', '38-39%', '39-40%',
+            '40-41%', '41-42%', '42-43%', '43-44%', '44-45%',
+            '45-46%', '46-47%', '47-48%', '48-49%', '49-50%',
+            '50-51%', '51-52%', '52-53%', '53-54%', '54-55%',
+            '55-56%', '56-57%', '57-58%', '58-59%', '59-60%',
+            '60-61%', '61-62%', '62-63%', '63-64%', '64-65%',
+            '65-66%', '66-67%', '67-68%', '68-69%', '69-70%',
+            '70-71%', '71-72%', '72-73%', '73-74%', '74-75%',
+            '75-76%', '76-77%', '77-78%', '78-79%', '79-80%',
+            '80-81%', '81-82%', '82-83%', '83-84%', '84-85%',
+            '85-86%', '86-87%', '87-88%', '88-89%', '89-90%',
+            '90-91%', '91-92%', '92-93%', '93-94%', '94-95%',
+            '95-96%', '96-97%', '97-98%', '98-99%', '99-100%'
+        ]
+        const all = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            1, 3, 2, 3, 2,
+            3, 15, 15, 29, 63,
+            103, 132, 302, 533, 881,
+            1408, 2267, 3414, 5022, 6686,
+            8275, 9669, 10362, 10987, 11476,
+            10123, 9723, 8533, 7152, 5996,
+            4610, 3557, 2549, 1872, 1465,
+            1052, 769, 565, 435, 310,
+            282, 192, 146, 142, 94,
+            76, 57, 37, 28, 22,
+            20, 13, 5, 11, 4,
+            7, 2, 5, 4, 2,
+            1, 0, 1, 1, 1,
+            2, 1, 0, 1, 1,
+            0, 0, 0, 0, 0
+        ]
+        const active0 = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            1, 3, 2, 2, 2,
+            1, 11, 11, 27, 46,
+            75, 107, 232, 404, 652,
+            1056, 1740, 2586, 3757, 4944,
+            6254, 7288, 7937, 8356, 8734,
+            7890, 7622, 6914, 5893, 5039,
+            3870, 3063, 2198, 1628, 1280,
+            930, 654, 493, 379, 267,
+            252, 174, 134, 123, 85,
+            68, 50, 32, 24, 18,
+            13, 8, 3, 7, 4,
+            5, 2, 2, 3, 2,
+            1, 0, 1, 0, 1,
+            1, 1, 0, 1, 0,
+            0, 0, 0, 0, 0
+        ]
+        const active1 = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 1, 1, 1, 1,
+            0, 7, 6, 11, 26,
+            41, 64, 127, 236, 395,
+            657, 1123, 1659, 2470, 3321,
+            4140, 4898, 5440, 5753, 6070,
+            5621, 5391, 5099, 4371, 3707,
+            2936, 2325, 1714, 1292, 1007,
+            732, 540, 406, 311, 226,
+            205, 141, 106, 106, 65,
+            57, 38, 24, 18, 16,
+            12, 7, 2, 7, 4,
+            2, 1, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ]
+        const active10 = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 1, 0, 1, 1,
+            0, 6, 3, 11, 20,
+            30, 51, 97, 192, 322,
+            548, 943, 1410, 2079, 2815,
+            3563, 4216, 4727, 5061, 5383,
+            5012, 4858, 4586, 3970, 3399,
+            2694, 2143, 1584, 1204, 928,
+            687, 501, 376, 285, 218,
+            194, 137, 100, 101, 62,
+            53, 33, 22, 17, 15,
+            11, 7, 2, 3, 4,
+            2, 1, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ]
+        const active100 = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1,
+            0, 0, 0, 3, 6,
+            8, 8, 27, 58, 104,
+            188, 370, 536, 808, 1049,
+            1448, 1732, 1990, 2187, 2404,
+            2365, 2341, 2354, 2100, 1878,
+            1587, 1313, 994, 731, 577,
+            449, 342, 255, 179, 136,
+            114, 80, 56, 64, 29,
+            28, 19, 10, 9, 9,
+            7, 1, 2, 1, 1,
+            1, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ]
+        new Chart(document.getElementById('all-bar').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: 'data',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: all
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'All Player Win Rate Bar Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('all-pie').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: '',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: all
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'left',
+                },
+                title: {
+                    display: true,
+                    text: 'All Players Win Rate Pie Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-0-bar').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: 'data',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active0
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 0 Game Players in 2019 Win Rate Bar Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-0-pie').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: '',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active0
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'left',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 0 Game Players in 2019 Win Rate Pie Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-1-bar').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: 'data',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 1 Game Players in 2019 Win Rate Bar Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-1-pie').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: '',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'left',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 1 Game Players in 2019 Win Rate Pie Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-10-bar').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: 'data',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active10
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 10 Game Players in 2019 Win Rate Bar Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-10-pie').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: '',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active10
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'left',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 10 Game Players in 2019 Win Rate Pie Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-100-bar').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: 'data',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active100
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 100 Game Players in 2019 Win Rate Bar Chart'
+                }
+            }
+        });
+        new Chart(document.getElementById('active-100-pie').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: label100,
+                datasets: [{
+                    label: '',
+                    backgroundColor: bgcolor,
+                    borderColor: '#ffffff',
+                    borderWidth: 1,
+                    data: active100
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    position: 'left',
+                },
+                title: {
+                    display: true,
+                    text: 'Minimum 100 Game Players in 2019 Win Rate Pie Chart'
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

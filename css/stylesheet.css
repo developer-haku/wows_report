@@ -1,0 +1,32 @@
+:root {
+    --mdc-theme-primary: #114047;
+}
+
+html,
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#content {
+    position: absolute;
+    border: none;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* Override Drawer Color */
+
+.mdc-drawer .mdc-list-item--activated .mdc-list-item__graphic {
+    color: #114047;
+}
+
+.mdc-drawer .mdc-list-item--activated {
+    color: rgba(17, 64, 71, .87);
+}
+
+
+/*************************/

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Premium Ship Ratio Amount</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css" integrity="sha256-NmfeKHX4FgSrBzL2BhPhzy41cHgzNYIEZyLyqf2/B30=" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js" integrity="sha256-XT58qJPKCsRBRq+MIcNDQ7dVh0GAa1k2r24w62z0Olk=" crossorigin="anonymous"></script>
+    <style>
+        #graph {
+            position: absolute;
+            width: 100%;
+            height: 150%;
+        }
+        
+        #setting {
+            position: fixed;
+            left: 100px;
+            top: 70px;
+            z-index: 99;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="graph"></div>
+
+    <script type="text/javascript">
+        let dotSize = 1
+        g = new Dygraph(
+            document.getElementById("graph"),
+            '../../data/special/PremiumShipRatioAmount.csv', {
+                label: ['Player ID', 'Win Rate'],
+                underlayCallback: drawLines,
+                drawPoints: true,
+                pointSize: dotSize,
+                dateWindow: [0, 2],
+                strokeWidth: 0
+            }
+        );
+
+        // coefficients of regression for each series.
+        // if coeffs = [ null, [1, 2], null ] then we draw a regression for series 1
+        // only. The regression line is y = 1 + 2 * x.
+        var coeffs = [null, null, null];
+
+        function regression(series) {
+            // Only run the regression over visible points.
+            var range = g.xAxisRange();
+
+            var sum_xy = 0.0,
+                sum_x = 0.0,
+                sum_y = 0.0,
+                sum_x2 = 0.0,
+                num = 0;
+            for (var i = 0; i < g.numRows(); i++) {
+                var x = g.getValue(i, 0);
+                if (x < range[0] || x > range[1]) continue;
+
+                var y = g.getValue(i, series);
+                if (y == null) continue;
+                if (y.length == 2) {
+                    // using fractions
+                    y = y[0] / y[1];
+                }
+
+                num++;
+                sum_x += x;
+                sum_y += y;
+                sum_xy += x * y;
+                sum_x2 += x * x;
+            }
+
+            var a = (sum_xy - sum_x * sum_y / num) / (sum_x2 - sum_x * sum_x / num);
+            var b = (sum_y - a * sum_x) / num;
+
+            coeffs[series] = [b, a];
+            if (typeof(console) != 'undefined') {
+                console.log("coeffs(" + series + "): [ " + b + ", " + a + "] ");
+            }
+
+            g.updateOptions({}); // forces a redraw.
+        }
+
+        function clearLines() {
+            for (var i = 0; i < coeffs.length; i++) coeffs[i] = null;
+            g.updateOptions({});
+        }
+
+        function drawLines(ctx, area, layout) {
+            if (typeof(g) == 'undefined') return; // won't be set on the initial draw.
+
+            ctx = layout.hidden_ctx_;
+            var range = g.xAxisRange();
+            for (var i = 0; i < coeffs.length; i++) {
+                if (!coeffs[i]) continue;
+                var a = coeffs[i][1];
+                var b = coeffs[i][0];
+
+                var x1 = range[0];
+                var y1 = a * x1 + b;
+                var x2 = range[1];
+                var y2 = a * x2 + b;
+
+                var p1 = g.toDomCoords(x1, y1);
+                var p2 = g.toDomCoords(x2, y2);
+
+                var color = 'rgb(255, 0, 0)';
+                ctx.save();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2.0;
+                ctx.beginPath();
+                ctx.moveTo(p1[0], p1[1]);
+                ctx.lineTo(p2[0], p2[1]);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        function expandDot() {
+            g.updateOptions({
+                pointSize: dotSize += 0.1
+            });
+        }
+
+        function shrinkDot() {
+            g.updateOptions({
+                pointSize: dotSize -= 0.1
+            });
+        }
+
+        function y0to30() {
+            g.updateOptions({
+                valueRange: [0, 30]
+            })
+        }
+
+        function y0to1400() {
+            g.updateOptions({
+                valueRange: [0, 1400]
+            })
+
+        }
+
+        function y0to9000() {
+            g.updateOptions({
+                valueRange: [0, 9000]
+            })
+        }
+
+        function x0to1() {
+            g.updateOptions({
+                dateWindow: [0, 1]
+            })
+        }
+
+        function x1to2() {
+            g.updateOptions({
+                dateWindow: [1, 2]
+            })
+        }
+
+        function x1to30() {
+            g.updateOptions({
+                dateWindow: [1, 30]
+            })
+        }
+        let showBtn = true
+
+        function btnSwitch() {
+            if (showBtn)
+                document.getElementById('function-btn').style.display = 'none'
+            else
+                document.getElementById('function-btn').style.display = 'initial'
+            showBtn = !showBtn
+        }
+    </script>
+
+    <div id="setting">
+        <button class="mdc-fab mdc-fab--extended" onClick="btnSwitch()"> 
+            <div class="mdc-fab__ripple"></div>
+            <span class="mdc-fab__label">O</span>
+        </button>
+        <div id="function-btn">
+            <button class="mdc-fab mdc-fab--extended" onClick="regression(1)"> 
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">Regression</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="clearLines()"> 
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">Clear Regression</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="expandDot()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">Dot Size +</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="shrinkDot()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">Dot Size -</span>
+            </button>
+            <br>
+            <button class="mdc-fab mdc-fab--extended" onClick="y0to30()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">Y-axis 0-30</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="y0to1400()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">Y-axis 0-1400</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="y0to9000()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">Y-axis 0-9000</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="x0to1()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">X-axis 0-1</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="x1to2()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">X-axis 1-2</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended" onClick="x1to30()"> 
+                <div class="mdc-fab__ripple "></div>
+                <span class="mdc-fab__label ">X-axis 1-30</span>
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

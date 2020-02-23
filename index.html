@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WoWS Analysis Report [NA Server]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+</head>
+
+<body>
+    <!-- Top App Bar -->
+    <header class="mdc-top-app-bar">
+        <div class="mdc-top-app-bar__row">
+            <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                <button class="mdc-top-app-bar__navigation-icon mdc-icon-button material-icons" href="#">menu</button>
+                <a class="mdc-top-app-bar__title" target="_blank" style="color: inherit;">WoWS Analysis Report [NA Server]</a>
+            </section>
+        </div>
+    </header>
+
+    <aside class="mdc-drawer mdc-drawer--modal">
+        <div class="mdc-drawer__content">
+            <nav class="mdc-list">
+                <a class="mdc-list-item mdc-list-item--activated" href="" aria-selected="true">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Damage</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average XP</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Frags</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average KD</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Shoot Down</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Spot</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Spot Damage</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Tier</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Battles</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Battle Survived</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Player Rating</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Average Win Rate</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Credit Ship Amount</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Premium Amount</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Premium Ratio</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>
+                    <span class="mdc-list-item__text">Premium Ship Ratio Amount</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">pie_chart</i>
+                    <span class="mdc-list-item__text">Active Players</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">pie_chart</i>
+                    <span class="mdc-list-item__text">Whales</span>
+                </a>
+
+            </nav>
+        </div>
+    </aside>
+    <div class="mdc-drawer-scrim"></div>
+
+    <iframe id="content" src="pages/overall_stats/IdSortedWinRate.html"></iframe>
+
+    <script type="application/javascript" src="https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+</body>
+
+</html>
